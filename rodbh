@@ -1,0 +1,251 @@
+--====== Make local table to keep variables from main program ======--
+local variables = {}
+
+--======= Replace table variables with reference of given table ======--
+function initTable(t)
+	assert(type(t) == "table", "Invalid argument in function 'initTable', expected table")
+	variables = t
+end
+
+--======== Hopefuly doing cleanup of table after program finished, is it even nessesery? =======--
+function delTable()
+	variables = nil
+end
+
+--======= Function converting string to boolean used for importing data from file ======--
+function toBool(var)
+	if var then
+		return true
+	elseif not var then
+		return false
+	else
+		return nil
+	end
+end
+
+--=========== Function responsible for printing messages and sending them over RedNet ======--
+function sendAndPrint(message)
+	assert(type(message) == "string", "Invalid argument in function 'moveForward', expected string")
+	print(message)
+	if variables.recId ~= nil then
+		rednet.send(variables.recId, message)
+	end
+end
+
+--=========== Functions responsible for moving turtle with location memory =======--
+function moveForward(noCheck)
+	noCheck = noCheck or false
+	if not noCheck then checkAll() end
+	if not turtle.forward() then
+		if not turtle.detect() then
+			if turtle.attack() then
+				turtle.suck()
+			else
+				goToStart()
+				variables.excavateFinish = true
+				sendAndPrint(bedrockMsg)
+				return false
+		elseif not turtle.dig() then
+			goToStart()
+			variables.excavateFinish = true
+			sendAndPrint(bedrockMsg)
+			return false
+		end
+		sleep(0)
+		moveForward(true)
+	else
+		if variables.direction == 1 then variables.z = variables.z + 1
+		elseif variables.direction == 2 then variables.x = variables.x - 1
+		elseif variables.direction == 3 then variables.z = variables.z - 1
+		elseif variables.direction == 4 then variables.x = variables.x + 1
+		end
+		local tempPosition = io.open("/rodbh.tmp", "w")
+		for k, val in pairs(variables) do
+			tempPosition:write(tostring(k) .. "=" .. tostring(val) .. "\n")
+		end
+		tempPosition:close()
+		return true
+	end
+end
+
+function moveUp(noCheck)
+	noCheck = noCheck or false
+	if not noCheck then checkAll() end
+	if not turtle.up() then
+		if not turtle.detectUp() then
+			if turtle.attackUp() then
+				turtle.suckUp()
+			else
+				goToStart()
+				variables.excavateFinish = true
+				sendAndPrint(bedrockMsg)
+				return false
+		elseif not turtle.digUp() then
+			goToStart()
+			variables.excavateFinish = true
+			sendAndPrint(bedrockMsg)
+			return false
+		end
+		sleep(0)
+		moveUp(true)
+	else
+		variables.y = variables.y + 1
+		local tempPosition = io.open("/rodbh.tmp", "w")
+		for k, val in pairs(variables) do
+			tempPosition:write(tostring(k) .. "=" .. tostring(val) .. "\n")
+		end
+		tempPosition:close()
+		return true
+	end
+end
+
+function moveDown(noCheck)
+	noCheck = noCheck or false
+	if not noCheck then checkAll() end
+	if not turtle.down() then
+		if not turtle.detectDown() then
+			if turtle.attackDown() then
+				turtle.suckDown()
+			else
+				sendAndPrint(bedrockMsg)
+				return false
+		elseif not turtle.digDown() then
+			sendAndPrint(bedrockMsg)
+			return false
+		end
+		sleep(0)
+		moveDown(true)
+	else
+		variables.y = variables.y - 1
+		local tempPosition = io.open("/rodbh.tmp", "w")
+		for k, val in pairs(variables) do
+			tempPosition:write(tostring(k) .. "=" .. tostring(val) .. "\n")
+		end
+		tempPosition:close()
+		return true
+	end
+end
+
+function leftTurn()
+	turtle.turnLeft()
+	variables.direction = variables.direction + 1
+	if variables.direction == 5 then variables.direction = 1 end
+end
+
+function rightTurn()
+	turtle.turnRight()
+	variables.direction = variables.direction - 1
+	if variables.direction == 0 then variables.direction = 4 end
+end
+
+function turnAround()
+	rightTurn()
+	rightTurn()
+end
+
+function faceNorth()
+	if variables.direction == 1 then
+		return true
+	elseif variables.direction == 2 then
+		rightTurn()
+		return true
+	elseif variables.direction == 3 then
+		turnAround()
+		return true
+	elseif variables.direction == 4 then
+		leftTurn()
+		return true
+	end
+end
+
+function faceWest()
+	if variables.direction == 1 then
+		leftTurn()
+		return true
+	elseif variables.direction == 2 then
+		return true
+	elseif variables.direction == 3 then
+		rightTurn()
+		return true
+	elseif variables.direction == 4 then
+		turnAround()
+		return true
+	end
+end
+	
+function faceSouth()
+	if variables.direction == 1 then
+		turnAround()
+		return true
+	elseif variables.direction == 2 then
+		leftTurn()
+		return true
+	elseif variables.direction == 3 then
+		return true
+	elseif variables.direction == 4 then
+		rightTurn()
+		return true
+	end
+end
+
+function faceEast()
+	if variables.direction == 1 then
+		rightTurn()
+		return true
+	elseif variables.direction == 2 then
+		turnAround()
+		return true
+	elseif variables.direction == 3 then
+		leftTurn()
+		return true
+	elseif variables.direction == 4 then
+		return true
+	end
+end
+
+function goToStart()
+	variables.xTmp, variables.yTmp, variables.zTmp = variables.x, variables.y, variables.z
+	variables.directionTmp = variables.direction
+	
+	if variables.y < 0 then
+		for i = 1, math.abs(variables.yTmp), 1 do moveUp(true) end
+	else
+		for i = 1, math.abs(variables.yTmp), 1 do moveDown(true) end
+	end
+	
+	if variables.x == 0 then
+		faceSouth()
+	elseif variables.x < 0 then
+		faceEast()
+	else
+		faceWest()
+	end
+	for i = 1, math.abs(variables.xTmp), 1 do moveForward(v, true) end
+	
+	faceSouth()
+	for i = 1, variables.zTmp, 1 do moveForward(true) end
+	
+end
+
+function goToEnd()
+	faceNorth()
+	while abs.math(variables.z) < math.abs(variables.zTmp) do moveForward() end
+	if variables.xTmp < 0 then
+		faceWest()
+	else
+		faceEast()
+	end
+	while math.abs(variables.x) < math.abs(variables.xTmp) do moveForward() end
+	
+	if variables.yTmp < 0 then	
+		while variables.y > variables.yTmp do moveDown() end
+	else
+		while variables.y < variables.yTmp do moveUp() end
+	end
+	
+	if variables.directionTmp == 1 then faceNorth()
+		elseif variables.directionTmp == 2 then faceWest()
+		elseif variables.directionTmp == 3 then faceSouth()
+		elseif variables.directionTmp == 4 then faceEast()
+	end
+end
