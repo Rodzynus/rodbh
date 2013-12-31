@@ -249,3 +249,11 @@ function goToEnd()
 		elseif variables.directionTmp == 4 then faceEast()
 	end
 end
+
+function horizontalFaceFront(front)
+	if variables.horizontalBool == front then 
+			faceEast()
+		else
+			faceWest()
+		end
+end
