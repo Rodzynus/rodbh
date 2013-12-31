@@ -372,6 +372,7 @@ function checkInv()
 end
 
 function checkFuel(start)
+	assert(type(start) == "boolean" or type(start) == "nil", "Function checkFuel requires boolean or nil as argument.")
 	start = start or false
 	if start == true then
 		if turtle.getFuelLevel() < (math.abs(v.xTmp) + math.abs(v.yTmp) + math.abs(v.zTmp) + 2) * 2 then
@@ -422,7 +423,7 @@ function getFill()
 		i = i + 1
 	end
 	return checkFill()
-	end
+end
 
 function dumpInv(all)
 	local dumped = true

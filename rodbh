@@ -250,10 +250,115 @@ function goToEnd()
 	end
 end
 
+--====== Make turtle to face the right way for digging ========--
 function horizontalFaceFront(front)
 	if variables.horizontalBool == front then 
 			faceEast()
 		else
 			faceWest()
 		end
+end
+
+--=========== Checking if there's enough fuel, fill and room in the inventory ===========--
+
+function checkInv()
+	local emptySlots = 0
+	for i = 2, 15, 1 do
+		if turtle.getItemCount(i) == 0 then
+			emptySlots = emptySlots + 1
+		end
+	end
+	if emptySlots <= 1 then
+		return false
+	else
+		return true
+	end
+end
+
+function checkFuel(start)
+	assert(type(start) == "boolean" or type(start) == "nil", "Function checkFuel requires boolean or nil as argument.")
+	start = start or false
+	if start then
+		if turtle.getFuelLevel() < (math.abs(variables.xTmp) 
+								  + math.abs(variables.yTmp) 
+								  + math.abs(variables.zTmp) + 2) * 2 then
+			return false
+		else
+			return true
+		end
+	else
+		if turtle.getFuelLevel() < math.abs(variables.x) 
+								 + math.abs(variables.y) 
+								 + math.abs(variables.z) + 2 then
+			return false
+		else
+			return true
+		end
+	end
+end
+
+function getFuel(start)
+		assert(type(start) == "boolean" or type(start) == "nil", "Function getFuel requires boolean or nil as argument.")
+		turtle.select(16)
+		turtle.refuel()
+		return checkFuel(start or false)
+end
+
+function checkFill()
+		if turtle.getItemCount(1) <= 2 then
+			return false
+		else
+			return true
+		end
+	end
+end
+
+function getFillChest()
+	for i = 1, 8, 1 do
+		if turtle.getItemSpace(i) ~= 0 then
+			turtle.select(i)
+			turtle.suck()
+		end
+	end
+	return checkFill()
+end
+
+function getFill()
+	local i = 1
+	while turtle.getItemSpace(1) ~= 0 and i <= 16 do
+		turtle.select(i)
+		turtle.transferTo(1)
+		i = i + 1
+	end
+	return checkFill()
+end
+
+function dumpInv(mode)
+	local dumped = true
+	if mode == "all" then
+		for i = 1, 16, 1 do
+			if turtle.getItemCount(i) ~= 0 then
+				turtle.select(i)
+				if turtle.drop() == false then dumped = false end
+			end
+		end
+	elseif mode == "nofill" then
+		for i = 1, 15, 1 do
+			if turtle.getItemCount(i) ~= 0 then
+				turtle.select(i)
+			if turtle.drop() == false then dumped = false end
+			end
+		end
+		else
+			for i = 2, 15, 1 do
+				if turtle.getItemCount(i) ~= 0 then
+					turtle.select(i)
+					if turtle.compareTo(1) == false then
+					if turtle.drop() == false then dumped = false end
+					end
+				end
+			end
+		end
+	end
+	return dumped
 end
