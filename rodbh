@@ -334,31 +334,189 @@ function getFill()
 end
 
 function dumpInv(mode)
-	local dumped = true
 	if mode == "all" then
 		for i = 1, 16, 1 do
 			if turtle.getItemCount(i) ~= 0 then
 				turtle.select(i)
-				if turtle.drop() == false then dumped = false end
+				if not turtle.drop() then return false end
 			end
 		end
 	elseif mode == "nofill" then
 		for i = 1, 15, 1 do
 			if turtle.getItemCount(i) ~= 0 then
 				turtle.select(i)
-			if turtle.drop() == false then dumped = false end
+			if not turtle.drop() then return false end
 			end
 		end
-		else
-			for i = 2, 15, 1 do
-				if turtle.getItemCount(i) ~= 0 then
-					turtle.select(i)
-					if turtle.compareTo(1) == false then
-					if turtle.drop() == false then dumped = false end
-					end
+	elseif mode == "fill" then
+		for i = 2, 15, 1 do
+			if turtle.getItemCount(i) ~= 0 then
+				turtle.select(i)
+				if not turtle.compareTo(1) then
+				if not turtle.drop() then return false end
 				end
 			end
 		end
+	else
+		assert(nil, "dumpInv: There is no option called " .. mode)
 	end
-	return dumped
+	return true
+end
+
+function getAll(mode)
+	goToStart()
+	faceSouth()
+	
+	if not dumpInv(mode) then
+		sendAndPrint(invMsg)
+		while not dumpInv(mode) do sleep(1) end
+		sendAndPrint(continueMsg)
+	end
+	
+	if not getFuel(true) then
+		sendAndPrint(fuelMsg)
+		while not checkFuel(true) do
+			turtle.select(16)
+			turtle.refuel()
+			sleep(1)
+		end
+		sendAndPrint(continueMsg)
+	end
+	
+	if variables.roomType ~= "nofill" and variables.roomType ~= "excavate" then
+		faceWest()
+		moveForward(true)
+		faceSouth()
+		if not getFillChest() then
+			if not getFill() then
+				sendAndPrint(fillMsg)
+				while not checkFill() do
+					getFillChest()
+					getFill()
+					sleep(1)
+				end
+				sendAndPrint(continueMsg)
+			end
+		end
+		faceEast()
+		moveForward(true)
+	end
+	turtle.select(1)
+	goToEnd()
+end
+
+function checkAll(mode)
+	if not checkInv() then getAll(mode)
+	elseif not checkFuel() then
+		if not getFuel() then getAll(mode) end
+	elseif not checkFill() then
+		if not getFill() then getAll(mode) end
+	end	
+end
+
+function place(mode)
+	checkAll(mode)
+	if not turtle.compare(1) then
+		if not turtle.detect() then
+			turtle.select(1)
+			if not turtle.place() then
+				if not turtle.attack() then
+					return false
+				else
+					turtle.suck()
+					sleep(0)
+					place(mode)
+				end
+			else
+				return true
+			end
+		else
+			if not turtle.dig() then
+				return false
+			else
+				sleep(0)
+				place(mode)
+			end
+		end
+	else
+		return true
+	end
+end
+
+function placeUp(mode)
+	checkAll(mode)
+	if not turtle.compareUp(1) then
+		if not turtle.detectUp() then
+			turtle.select(1)
+			if not turtle.placeUp() then
+				if not turtle.attackUp() then
+					return false
+				else
+					turtle.suckUp()
+					sleep(0)
+					placeUp(mode)
+				end
+			else
+				return true
+			end
+		else
+			if not turtle.digUp() then
+				return false
+			else
+				sleep(0)
+				placeUp(mode)
+			end
+		end
+	else
+		return true
+	end
+end
+
+function placeDown(mode)
+	checkAll(mode)
+	if not turtle.compareDown(1) then
+		if not turtle.detectDown() then
+			turtle.select(1)
+			if not turtle.placeDown() then
+				if not turtle.attackDown() then
+					return false
+				else
+					turtle.suckDown()
+					sleep(0)
+					placeDown(mode)
+				end
+			else
+				return true
+			end
+		else
+			if not turtle.digDown() then
+				return false
+			else
+				sleep(0)
+				placeDown(mode)
+			end
+		end
+	else
+		return true
+	end
+end
+
+function nextStep()
+	faceNorth()
+	moveForward()
+	variables.verticalBool = not variables.verticalBool
+	variables.horizontalBool = not variables.horizontalBool
+end
+
+function nextLayer(mode, place)
+	place = place or false
+	if not variables.verticalBool then
+		moveDown(mode)
+	else
+		moveUp(mode)
+	end
+	if place then
+		place(mode)
+	end
+	horizontalBool = not horizontalBool
 end
