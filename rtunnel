@@ -13,7 +13,6 @@ local v = {
 	verticalBool = false;
 	extension = false;
 	recId = nil;
-	endMsg = "Tworzenie tunelu o wymiarach " .. v.length .. " x " .. v.width + 1.. " x " .. v.height .. " zakonczone powodzeniem.";
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when turtle's lacking building material for filling ==--
@@ -45,6 +44,7 @@ v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") -
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
 v.roomType = "tunnel"
+v.endMsg = "Tworzenie tunelu o wymiarach " .. v.length .. " x " .. v.width + 1.. " x " .. v.height .. " zakonczone powodzeniem."
 local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 
 local function tunnel()
