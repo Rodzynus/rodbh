@@ -12,6 +12,23 @@ function delTable()
 	variables = nil
 end
 
+function loadVariables()
+	if fs.exists("/rodbh.tmp") then
+		for line in io.lines("rodbhPos.tmp") do
+			for k, val in string.gmatch(line, "(%w+)=(%w+)") do
+				if k == x or k == y or k == z or k == direction 
+					or k == length or k == height or k == width then
+					variables[k] = assert(tonumber(val), "Blad pobierania danych z pliku rodbh.tmp")
+				elseif k == horizontalBool or k == verticalBool or k == extension then
+					variables[k] = toBool(val)
+				else 
+					variables[k] = assert(val, "Blad pobierania danych z pliku rodbh.tmp")
+				end
+			end
+		end
+	end
+end
+
 --======= Function converting string to boolean used for importing data from file ======--
 function toBool(var)
 	if var then
@@ -45,6 +62,7 @@ function moveForward(noCheck)
 				variables.excavateFinish = true
 				sendAndPrint(bedrockMsg)
 				return false
+			end
 		elseif not turtle.dig() then
 			goToStart()
 			variables.excavateFinish = true
@@ -80,6 +98,7 @@ function moveUp(noCheck)
 				variables.excavateFinish = true
 				sendAndPrint(bedrockMsg)
 				return false
+			end
 		elseif not turtle.digUp() then
 			goToStart()
 			variables.excavateFinish = true
@@ -109,6 +128,7 @@ function moveDown(noCheck)
 			else
 				sendAndPrint(bedrockMsg)
 				return false
+			end
 		elseif not turtle.digDown() then
 			sendAndPrint(bedrockMsg)
 			return false
@@ -253,10 +273,10 @@ end
 --====== Make turtle to face the right way for digging ========--
 function horizontalFaceFront(front)
 	if variables.horizontalBool == front then 
-			faceEast()
-		else
-			faceWest()
-		end
+		faceEast()
+	else
+		faceWest()
+	end
 end
 
 --=========== Checking if there's enough fuel, fill and room in the inventory ===========--
