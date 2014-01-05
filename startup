@@ -1,20 +1,33 @@
 os.loadApi("rodbhAPI/rodbh")
 
-if fs.exists("/rodbh.tmp") then
-	for line in io.lines("/rodbh.tmp") do
-		for k, val in string.gmatch(line, "(%w+)=(%w+)") do
-			if k == "roomType" then
-				print("Temp file detected... Running " val " program from saved position."
-				for i = 15, 1, -1 do
-					print("Program will resume in... " .. i .. "s.")
-					--term.clearline()
-					term.setCursorPos(1,2)
-					sleep(1)
+local function resume()
+	if fs.exists("/rodbh.tmp") then
+		for line in io.lines("/rodbh.tmp") do
+			for k, val in string.gmatch(line, "(%w+)=(%w+)") do
+				if k == "roomType" then
+					print("Temp file detected... Running " val " program from saved position."
+					print("Hit Q to stop.")
+					mainTimer = os.startTimer(15)
+					for i = 15, 1, -1 do
+						id, key = os.pullEvent()
+						if id == "timer" and key == mainTimer then
+							shell.run(val)
+							return true
+						elseif id == "timer" and key == secondTimer then
+							print("Program will resume in... " .. i .. "s.")
+						elseif id == "key" and key == 16 then
+							return false
+						end
+						secondTimer = os.startTimer(1)
+					end
 				end
-				shell.run(val)
 			end
 		end
+	else
+		print("Temp filed not found. Computer will now enter standard prompt mode.")
 	end
-else
-	print("Temp filed not found. Computer will now enter standard prompt mode.")
+end
+
+if not resume() then
+	fs.delete("/rodbh.tmp")
 end
