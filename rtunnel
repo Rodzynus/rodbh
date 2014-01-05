@@ -13,6 +13,7 @@ local v = {
 	verticalBool = false;
 	extension = false;
 	recId = nil;
+	mode = "fill"
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when turtle's lacking building material for filling ==--
@@ -51,28 +52,28 @@ local function tunnel()
 		if i ~= zStart then rodbh.nextStep() end
 		if i == 1 then
 			rodbh.horizontalFaceFront(false)
-			rodbh.place("fill")
+			rodbh.place()
 			rodbh.horizontalFaceFront(true)
 		end
 		
 		for j = yStart, v.height, 1 do
-			if j > yStart then rodbh.nextLayer("fill", true) end
+			if j > yStart then rodbh.nextLayer(true) end
 			rodbh.horizontalFaceFront(true)
 			
 			for k = xStart, v.width, 1 do
 				if math.abs(v.y) == 0 then
-					rodbh.placeDown("fill")
+					rodbh.placeDown()
 				elseif math.abs(v.y) == v.height-1 then
-					rodbh.placeUp("fill")
+					rodbh.placeUp()
 				end
 				if math.abs(v.x) < v.width then
-					rodbh.moveForward("fill")
+					rodbh.moveForward()
 				else
-					rodbh.place("fill")
+					rodbh.place()
 					if math.abs(v.y) == 0 then
-						rodbh.placeDown("fill")
+						rodbh.placeDown()
 					elseif math.abs(v.y) == v.height-1 then
-						rodbh.placeUp("fill")
+						rodbh.placeUp()
 					end
 				end
 			end
@@ -97,7 +98,8 @@ local function build()
 	
 	tunnel()
 	rodbh.goToStart()
-	rodbh.dumpInv("all", true)
+	v.mode = "all"
+	rodbh.dumpInv()
 	rodbh.sendAndPrint(endMsg)
 end
 

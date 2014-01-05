@@ -12,6 +12,7 @@ local v = {
 	horizontalBool = false;
 	verticalBool = false;
 	recId = nil;
+	mode = "nofill"
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when out of fuel ==--
@@ -49,11 +50,11 @@ local function nofill()
 		end
 		for j = yStart, v.height, 1 do
 			if j ~= yStart then
-				rodbh.nextLayer("nofill")
+				rodbh.nextLayer()
 			end
 			rodbh.horizontalFaceFront(true)
 			for k = 1, v.width, 1 do
-				rodbh.moveForward("nofill")
+				rodbh.moveForward()
 			end
 			xStart = 1
 		end
@@ -76,7 +77,8 @@ local function build()
 	
 	nofill()
 	rodbh.goToStart()
-	rodbh.dumpInv("all", true)
+	v.mode = "all"
+	rodbh.dumpInv()
 	rodbh.sendAndPrint(endMsg)
 end
 

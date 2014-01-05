@@ -50,9 +50,9 @@ function sendAndPrint(message)
 end
 
 --=========== Functions responsible for moving turtle with location memory =======--
-function moveForward(mode, noCheck)
+function moveForward(noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll(mode) end
+	if not noCheck then checkAll() end
 	if not turtle.forward() then
 		if not turtle.detect() then
 			if turtle.attack() then
@@ -86,9 +86,9 @@ function moveForward(mode, noCheck)
 	end
 end
 
-function moveUp(mode, noCheck)
+function moveUp(noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll(mode) end
+	if not noCheck then checkAll() end
 	if not turtle.up() then
 		if not turtle.detectUp() then
 			if turtle.attackUp() then
@@ -118,9 +118,9 @@ function moveUp(mode, noCheck)
 	end
 end
 
-function moveDown(mode noCheck)
+function moveDown(noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll(mode) end
+	if not noCheck then checkAll() end
 	if not turtle.down() then
 		if not turtle.detectDown() then
 			if turtle.attackDown() then
@@ -353,22 +353,22 @@ function getFill()
 	return checkFill()
 end
 
-function dumpInv(mode)
-	if mode == "all" then
+function dumpInv()
+	if v.mode == "all" then
 		for i = 1, 16, 1 do
 			if turtle.getItemCount(i) ~= 0 then
 				turtle.select(i)
 				if not turtle.drop() then return false end
 			end
 		end
-	elseif mode == "nofill" then
+	elseif v.mode == "nofill" then
 		for i = 1, 15, 1 do
 			if turtle.getItemCount(i) ~= 0 then
 				turtle.select(i)
 			if not turtle.drop() then return false end
 			end
 		end
-	elseif mode == "fill" then
+	elseif v.mode == "fill" then
 		for i = 2, 15, 1 do
 			if turtle.getItemCount(i) ~= 0 then
 				turtle.select(i)
@@ -383,13 +383,13 @@ function dumpInv(mode)
 	return true
 end
 
-function getAll(mode)
+function getAll()
 	goToStart()
 	faceSouth()
 	
-	if not dumpInv(mode) then
+	if not dumpInv() then
 		sendAndPrint(invMsg)
-		while not dumpInv(mode) do sleep(1) end
+		while not dumpInv() do sleep(1) end
 		sendAndPrint(continueMsg)
 	end
 	
@@ -425,17 +425,17 @@ function getAll(mode)
 	goToEnd()
 end
 
-function checkAll(mode)
-	if not checkInv() then getAll(mode)
+function checkAll()
+	if not checkInv() then getAll()
 	elseif not checkFuel() then
-		if not getFuel() then getAll(mode) end
+		if not getFuel() then getAll() end
 	elseif not checkFill() then
-		if not getFill() then getAll(mode) end
+		if not getFill() then getAll() end
 	end	
 end
 
-function place(mode)
-	checkAll(mode)
+function place()
+	checkAll()
 	if not turtle.compare(1) then
 		if not turtle.detect() then
 			turtle.select(1)
@@ -445,7 +445,7 @@ function place(mode)
 				else
 					turtle.suck()
 					sleep(0)
-					place(mode)
+					place()
 				end
 			else
 				return true
@@ -455,7 +455,7 @@ function place(mode)
 				return false
 			else
 				sleep(0)
-				place(mode)
+				place()
 			end
 		end
 	else
@@ -463,8 +463,8 @@ function place(mode)
 	end
 end
 
-function placeUp(mode)
-	checkAll(mode)
+function placeUp()
+	checkAll()
 	if not turtle.compareUp(1) then
 		if not turtle.detectUp() then
 			turtle.select(1)
@@ -474,7 +474,7 @@ function placeUp(mode)
 				else
 					turtle.suckUp()
 					sleep(0)
-					placeUp(mode)
+					placeUp()
 				end
 			else
 				return true
@@ -484,7 +484,7 @@ function placeUp(mode)
 				return false
 			else
 				sleep(0)
-				placeUp(mode)
+				placeUp()
 			end
 		end
 	else
@@ -492,8 +492,8 @@ function placeUp(mode)
 	end
 end
 
-function placeDown(mode)
-	checkAll(mode)
+function placeDown()
+	checkAll()
 	if not turtle.compareDown(1) then
 		if not turtle.detectDown() then
 			turtle.select(1)
@@ -503,7 +503,7 @@ function placeDown(mode)
 				else
 					turtle.suckDown()
 					sleep(0)
-					placeDown(mode)
+					placeDown()
 				end
 			else
 				return true
@@ -513,7 +513,7 @@ function placeDown(mode)
 				return false
 			else
 				sleep(0)
-				placeDown(mode)
+				placeDown()
 			end
 		end
 	else
@@ -528,15 +528,15 @@ function nextStep()
 	variables.horizontalBool = not variables.horizontalBool
 end
 
-function nextLayer(mode, place)
+function nextLayer(place)
 	place = place or false
 	if not variables.verticalBool then
-		moveDown(mode)
+		moveDown()
 	else
-		moveUp(mode)
+		moveUp()
 	end
 	if place then
-		place(mode)
+		place()
 	end
 	horizontalBool = not horizontalBool
 end

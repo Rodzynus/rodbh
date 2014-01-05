@@ -13,6 +13,7 @@ local v = {
 	verticalBool = false;
 	extension = false;
 	recId = nil;
+	mode = "all"
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when turtle's lacking building material for filling ==--
@@ -49,11 +50,11 @@ local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 local function room()
 	for i = zStart, v.length, 1 do
 		if i ~= zStart then
-			rodbh.nextStep("fill", true)
+			rodbh.nextStep(true)
 		end
 		if i == 1 then
 			rodbh.horizontalFaceFront(false)
-			rodbh.place("fill")
+			rodbh.place()
 			rodbh.horizontalFaceFront(true)
 		end
 		
@@ -115,7 +116,8 @@ local function build()
 	
 	room()
 	rodbh.goToStart()
-	rodbh.dumpInv("all", true)
+	v.mode = "all"
+	rodbh.dumpInv()
 	rodbh.sendAndPrint(endMsg)
 end
 
