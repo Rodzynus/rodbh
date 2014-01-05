@@ -11,7 +11,6 @@ local v = {
 	roomType = nil;
 	horizontalBool = false;
 	verticalBool = false;
-	extension = false;
 	recId = nil;
 	mode = "fill"
 			--== Message printed when inventory is full ==--
@@ -32,7 +31,6 @@ for i, val in ipairs(tArgs) do
 		elseif val == "right" then v.horizontalBool = true
 		elseif val == "up" then v.verticalBool = false
 		elseif val == "down" then v.verticalBool = true
-		elseif val == "extension" then v.extensiton = true
 		end
 end
 
@@ -43,7 +41,7 @@ v.length = assert(tonumber(tArgs[1]), "Nieprawidlowa dlugosc pomieszczenia.")
 v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") - 1
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
-v.roomType = "tunnel"
+v.roomType = "rtunnel"
 v.endMsg = "Tworzenie tunelu o wymiarach " .. v.length .. " x " .. v.width + 1.. " x " .. v.height .. " zakonczone powodzeniem."
 local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 
