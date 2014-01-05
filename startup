@@ -1,0 +1,20 @@
+os.loadApi("rodbhAPI/rodbh")
+
+if fs.exists("/rodbh.tmp") then
+	for line in io.lines("/rodbh.tmp") do
+		for k, val in string.gmatch(line, "(%w+)=(%w+)") do
+			if k == "roomType" then
+				print("Temp file detected... Running " val " program from saved position."
+				for i = 15, 1, -1 do
+					print("Program will resume in... " .. i .. "s.")
+					--term.clearline()
+					term.setCursorPos(1,2)
+					sleep(1)
+				end
+				shell.run(val)
+			end
+		end
+	end
+else
+	print("Temp filed not found. Computer will now enter standard prompt mode.")
+end
