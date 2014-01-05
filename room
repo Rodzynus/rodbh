@@ -43,12 +43,14 @@ v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") -
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
 v.roomType = "tunnel"
-v.endMsg = "Tworzenie tunelu o wymiarach " .. v.length .. " x " .. v.width + 1.. " x " .. v.height .. " zakonczone powodzeniem."
+v.endMsg = "Tworzenie pokoju o wymiarach " .. v.length .. " x " .. v.width + 1.. " x " .. v.height .. " zakonczone powodzeniem."
 local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 
-local function tunnel()
+local function room()
 	for i = zStart, v.length, 1 do
-		if i ~= zStart then rodbh.nextStep() end
+		if i ~= zStart then
+			rodbh.nextStep("fill", true)
+		end
 		if i == 1 then
 			rodbh.horizontalFaceFront(false)
 			rodbh.place("fill")
@@ -56,24 +58,40 @@ local function tunnel()
 		end
 		
 		for j = yStart, v.height, 1 do
-			if j > yStart then rodbh.nextLayer("fill", true) end
-			rodbh.horizontalFaceFront(true)
+			if j ~= yStart then
+				rodbh.nextLayer(true)
+			end
 			
-			for k = xStart, v.width, 1 do
-				if math.abs(v.y) == 0 then
-					rodbh.placeDown("fill")
-				elseif math.abs(v.y) == v.height-1 then
-					rodbh.placeUp("fill")
+			for k = xStart, v.width+1, 1 do
+			
+				if math.abs(v.y) == 0 then rodbh.placeDown()
+				elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+				
+				if i == 1 and (v.x < -1 or v.x > 0 or math.abs(v.y) > 0) and not v.extension then
+					rodbh.faceSouth()
+					rodbh.place()	
+				elseif i == v.length then
+					rodbh.faceNorth()
+					rodbh.place()
 				end
-				if math.abs(v.x) < v.width then
-					rodbh.moveForward("fill")
-				else
-					rodbh.place("fill")
-					if math.abs(v.y) == 0 then
-						rodbh.placeDown("fill")
-					elseif math.abs(v.y) == v.height-1 then
-						rodbh.placeUp("fill")
+				
+				rodbh.horizontalFaceFront(true)
+				
+				if k == v.width+1 then
+					rodbh.place()
+					if math.abs(v.y) == 0 then rodbh.placeDown()
+					elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+					if i == 1 and (v.x < -1 or v.x > 0 or math.abs(v.y) > 0) and not v.extension then
+						rodbh.faceSouth()
+						rodbh.place()
+						rodbh.horizontalFaceFront(true)
+					elseif i == v.length then
+						rodbh.faceNorth()
+						rodbh.place()
+						rodbh.horizontalFaceFront(true)
 					end
+				else
+					rodbh.moveForward()
 				end
 			end
 			xStart = 1
@@ -95,7 +113,7 @@ local function build()
 	term.setCursorPos(1,1)
 	print ("Aby przerwac wcisnij Q")
 	
-	tunnel()
+	room()
 	rodbh.goToStart()
 	rodbh.dumpInv("all", true)
 	rodbh.sendAndPrint(endMsg)

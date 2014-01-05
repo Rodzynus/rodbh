@@ -50,9 +50,9 @@ function sendAndPrint(message)
 end
 
 --=========== Functions responsible for moving turtle with location memory =======--
-function moveForward(noCheck)
+function moveForward(mode, noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll() end
+	if not noCheck then checkAll(mode) end
 	if not turtle.forward() then
 		if not turtle.detect() then
 			if turtle.attack() then
@@ -86,9 +86,9 @@ function moveForward(noCheck)
 	end
 end
 
-function moveUp(noCheck)
+function moveUp(mode, noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll() end
+	if not noCheck then checkAll(mode) end
 	if not turtle.up() then
 		if not turtle.detectUp() then
 			if turtle.attackUp() then
@@ -118,9 +118,9 @@ function moveUp(noCheck)
 	end
 end
 
-function moveDown(noCheck)
+function moveDown(mode noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll() end
+	if not noCheck then checkAll(mode) end
 	if not turtle.down() then
 		if not turtle.detectDown() then
 			if turtle.attackDown() then
