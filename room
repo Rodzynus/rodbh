@@ -11,9 +11,10 @@ local v = {
 	roomType = nil;
 	horizontalBool = false;
 	verticalBool = true;
+	verticalInit = true;
 	extension = false;
 	recId = nil;
-	mode = "all";
+	mode = "fill";
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when turtle's lacking building material for filling ==--
@@ -35,6 +36,7 @@ for i, val in ipairs(tArgs) do
 		elseif val == "extension" then v.extensiton = true
 		end
 end
+v.verticalInit = v.verticalBool
 
 rodbh.initTable(v)
 rodbh.loadVariables()
@@ -52,12 +54,10 @@ local function room()
 		if i ~= zStart then
 			rodbh.nextStep()
 		end
-		if i == 1 then
-			rodbh.horizontalFaceFront(false)
-			rodbh.place()
-			rodbh.horizontalFaceFront(true)
-		end
-		
+		rodbh.horizontalFaceFront(false)
+		rodbh.place()
+		rodbh.horizontalFaceFront(true)
+			
 		for j = yStart, v.height, 1 do
 			if j ~= yStart then
 				rodbh.nextLayer(true)
@@ -65,8 +65,13 @@ local function room()
 			
 			for k = xStart, v.width+1, 1 do
 			
-				if math.abs(v.y) == 0 then rodbh.placeDown()
-				elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+				if v.verticalInit then
+					if math.abs(v.y) == 0 then rodbh.placeDown()
+					elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+				else
+					if math.abs(v.y) == 0 then rodbh.placeUp()
+					elseif math.abs(v.y) == v.height-1 then rodbh.placeDown() end
+				end
 				
 				if i == 1 and (v.x < -1 or v.x > 0 or math.abs(v.y) > 0) and not v.extension then
 					rodbh.faceSouth()
@@ -80,16 +85,12 @@ local function room()
 				
 				if k == v.width+1 then
 					rodbh.place()
-					if math.abs(v.y) == 0 then rodbh.placeDown()
-					elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
-					if i == 1 and (v.x < -1 or v.x > 0 or math.abs(v.y) > 0) and not v.extension then
-						rodbh.faceSouth()
-						rodbh.place()
-						rodbh.horizontalFaceFront(true)
-					elseif i == v.length then
-						rodbh.faceNorth()
-						rodbh.place()
-						rodbh.horizontalFaceFront(true)
+					if v.verticalInit then
+						if math.abs(v.y) == 0 then rodbh.placeDown()
+						elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+					else
+						if math.abs(v.y) == 0 then rodbh.placeUp()
+						elseif math.abs(v.y) == v.height-1 then rodbh.placeDown() end
 					end
 				else
 					rodbh.moveForward()
