@@ -87,17 +87,18 @@ local function build()
 	local termSizeX, termSizeY = term.getSize()
 	for i = 5, 1, -1 do
 		term.setCursorPos(1,cursorY)
+		print ("Kopanie tunelu o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
+		sleep(1)
 		for j = cursorY, termSizeY do
 			term.clearLine()
 		end
-		print ("Kopanie tunelu o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
-		sleep(1)
 	end
 	cursorX, cursorY = term.getCursorPos()
 	term.setCursorPos(1,cursorY)
 	for j = cursorY, termSizeY do
 		term.clearLine()
 	end
+	print ("Kopanie tunelu o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpoczete.")
 	
 	tunnel()
 	rodbh.goToStart()
