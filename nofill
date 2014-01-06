@@ -21,6 +21,7 @@ local v = {
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
 		--== Message printed when resuming program ==--
 	continueMsg = "Kontynuuje prace...";
+	endMsg = "Program zakonczony powodzeniem.";
 }
 
 --===== Going through table of arguments for part of needed variables =====--
@@ -40,7 +41,6 @@ v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") -
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
 v.roomType = "nofill"
-v.endMsg = "Drazenie przestrzeni o wymiarach " .. v.length .. " x " .. v.width + 1 .. " x " .. v.height .. " zakonczone powodzeniem."
 local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 
 local function nofill()
@@ -63,17 +63,22 @@ local function nofill()
 end
 
 local function build()
+	print ("Aby przerwac wcisnij Q")
+	local cursorX, cursorY = term.getCursorPos()
+	local termSizeX, termSizeY = term.getSize()
 	for i = 5, 1, -1 do
-		term.clear()
-		term.setCursorPos(1,1)
-		print ("Aby przerwac wcisnij Q")
-		print ("Drazenie przestrzeni o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
+		term.setCursorPos(1,cursorY)
+		for j = cursorY, termSizeY do
+			term.clearLine()
+		end
+		print ("Drazenie pomieszczenia o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
 		sleep(1)
 	end
-
-	term.clear()
-	term.setCursorPos(1,1)
-	print ("Aby przerwac wcisnij Q")
+	cursorX, cursorY = term.getCursorPos()
+	term.setCursorPos(1,cursorY)
+	for j = cursorY, termSizeY do
+		term.clearLine()
+	end
 	
 	nofill()
 	rodbh.goToStart()

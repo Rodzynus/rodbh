@@ -25,6 +25,7 @@ local v = {
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
 		--== Message printed when resuming program ==--
 	continueMsg = "Kontynuuje prace...";
+	endMsg = "Program zakonczony powodzeniem.";
 }
 
 --===== Going through table of arguments for part of needed variables =====--
@@ -46,7 +47,6 @@ v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") -
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
 v.roomType = "room"
-v.endMsg = "Tworzenie pokoju o wymiarach " .. v.length .. " x " .. v.width + 1 .. " x " .. v.height .. " zakonczone powodzeniem."
 local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 
 local function room()
