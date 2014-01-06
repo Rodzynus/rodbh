@@ -103,22 +103,18 @@ local function room()
 end
 
 local function build()
+	term.clear()
+	term.setCursorPos(1,1)
 	print ("Aby przerwac wcisnij Q")
-	local cursorX, cursorY = term.getCursorPos()
-	local termSizeX, termSizeY = term.getSize()
 	for i = 5, 1, -1 do
-		term.setCursorPos(1,cursorY)
+		term.setCursorPos(1,2)
 		print ("Budowanie pomieszczenia o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
 		sleep(1)
-		for j = cursorY, termSizeY do
-			term.clearLine()
-		end
 	end
-	cursorX, cursorY = term.getCursorPos()
-	term.setCursorPos(1,cursorY)
-	for j = cursorY, termSizeY do
-		term.clearLine()
-	end
+	term.setCursorPos(1,3)
+	term.clearLine()
+	term.setCursorPos(1,2)
+	term.clearLine()
 	print ("Budowanie pomieszczenia o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpoczete.")
 	
 	room()
