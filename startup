@@ -1,11 +1,11 @@
-os.loadApi("rodbhAPI/rodbh")
+os.loadAPI("/rodbhAPI/rodbh")
 
 local function resume()
 	if fs.exists("/rodbh.tmp") then
 		for line in io.lines("/rodbh.tmp") do
 			for k, val in string.gmatch(line, "(%w+)=(%w+)") do
 				if k == "roomType" then
-					print("Temp file detected... Running " val " program from saved position."
+					print("Temp file detected... Running " .. val .. " program from saved position.")
 					print("Hit Q to stop.")
 					mainTimer = os.startTimer(15)
 					for i = 15, 1, -1 do

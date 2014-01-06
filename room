@@ -1,4 +1,4 @@
-os.loadApi("rodbhAPI/rodbh")
+os.loadAPI("/rodbhAPI/rodbh")
 
 local tArgs = { ... }
 local v = {
@@ -10,10 +10,10 @@ local v = {
 	height = nil;
 	roomType = nil;
 	horizontalBool = false;
-	verticalBool = false;
+	verticalBool = true;
 	extension = false;
 	recId = nil;
-	mode = "all"
+	mode = "all";
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when turtle's lacking building material for filling ==--
@@ -28,10 +28,10 @@ local v = {
 
 --===== Going through table of arguments for part of needed variables =====--
 for i, val in ipairs(tArgs) do
-		elseif val == "left" then v.horizontalBool = false
+		if val == "left" then v.horizontalBool = false
 		elseif val == "right" then v.horizontalBool = true
-		elseif val == "up" then v.verticalBool = false
-		elseif val == "down" then v.verticalBool = true
+		elseif val == "up" then v.verticalBool = true
+		elseif val == "down" then v.verticalBool = false
 		elseif val == "extension" then v.extensiton = true
 		end
 end
@@ -43,14 +43,14 @@ v.length = assert(tonumber(tArgs[1]), "Nieprawidlowa dlugosc pomieszczenia.")
 v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") - 1
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
-v.roomType = "tunnel"
-v.endMsg = "Tworzenie pokoju o wymiarach " .. v.length .. " x " .. v.width + 1.. " x " .. v.height .. " zakonczone powodzeniem."
+v.roomType = "room"
+v.endMsg = "Tworzenie pokoju o wymiarach " .. v.length .. " x " .. v.width + 1 .. " x " .. v.height .. " zakonczone powodzeniem."
 local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
 
 local function room()
 	for i = zStart, v.length, 1 do
 		if i ~= zStart then
-			rodbh.nextStep(true)
+			rodbh.nextStep()
 		end
 		if i == 1 then
 			rodbh.horizontalFaceFront(false)
@@ -102,23 +102,24 @@ local function room()
 end
 
 local function build()
-	for i = 5, 1, -1 do
-		term.clear()
-		term.setCursorPos(1,1)
-		print ("Aby przerwac wcisnij Q")
-		print ("Kopanie tunelu o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
-		sleep(1)
-	end
-
 	term.clear()
 	term.setCursorPos(1,1)
 	print ("Aby przerwac wcisnij Q")
+	for i = 5, 1, -1 do
+		term.setCursorPos(1,2)
+		term.clearLine()
+		print ("Tworzenie pokoju o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " x " .. v.height .. " rozpocznie sie za: " .. i)
+		sleep(1)
+	end
+
+	term.clearLine()
+	term.setCursorPos(1,2)
 	
 	room()
 	rodbh.goToStart()
 	v.mode = "all"
 	rodbh.dumpInv()
-	rodbh.sendAndPrint(endMsg)
+	rodbh.sendAndPrint(v.endMsg)
 end
 
 local function stop()
@@ -136,6 +137,4 @@ if v.recId ~= nil then
 end
 
 parallel.waitForAny(stop, build)
-fs.delete("rodbhPos.tmp")
-
-end
+fs.delete("/rodbh.tmp")
