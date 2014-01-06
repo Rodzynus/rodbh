@@ -1,4 +1,4 @@
-os.loadApi("rodbhAPI/rodbh")
+os.loadAPI("/rodbhAPI/rodbh")
 
 local tArgs = { ... }
 local v = {
@@ -10,9 +10,10 @@ local v = {
 	height = nil;
 	roomType = nil;
 	horizontalBool = false;
-	verticalBool = false;
+	verticalBool = true;
+	verticalInit = true;
 	recId = nil;
-	mode = "fill"
+	mode = "fill";
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when turtle's lacking building material for filling ==--
@@ -28,12 +29,13 @@ local v = {
 
 --===== Going through table of arguments for part of needed variables =====--
 for i, val in ipairs(tArgs) do
-		elseif val == "left" then v.horizontalBool = false
+		if val == "left" then v.horizontalBool = false
 		elseif val == "right" then v.horizontalBool = true
-		elseif val == "up" then v.verticalBool = false
-		elseif val == "down" then v.verticalBool = true
+		elseif val == "up" then v.verticalBool = true
+		elseif val == "down" then v.verticalBool = false
 		end
 end
+v.verticalInit = v.verticalBool
 
 rodbh.initTable(v)
 rodbh.loadVariables()
@@ -43,36 +45,38 @@ v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") -
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
 v.roomType = "rtunnel"
-local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
+local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
 
 local function tunnel()
 	for i = zStart, v.length, 1 do
 		if i ~= zStart then rodbh.nextStep() end
-		if i == 1 then
-			rodbh.horizontalFaceFront(false)
-			rodbh.place()
-			rodbh.horizontalFaceFront(true)
-		end
-		
+		rodbh.horizontalFaceFront(false)
+		rodbh.place()
+		rodbh.horizontalFaceFront(true)
+			
 		for j = yStart, v.height, 1 do
-			if j > yStart then rodbh.nextLayer(true) end
+			if j ~= yStart then rodbh.nextLayer(true) end
 			rodbh.horizontalFaceFront(true)
 			
-			for k = xStart, v.width, 1 do
-				if math.abs(v.y) == 0 then
-					rodbh.placeDown()
-				elseif math.abs(v.y) == v.height-1 then
-					rodbh.placeUp()
-				end
-				if math.abs(v.x) < v.width then
-					rodbh.moveForward()
+			for k = xStart, v.width+1, 1 do
+				if v.verticalInit then
+					if math.abs(v.y) == 0 then rodbh.placeDown()
+					elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
 				else
+					if math.abs(v.y) == 0 then rodbh.placeUp()
+					elseif math.abs(v.y) == v.height-1 then rodbh.placeDown() end
+				end
+				if k == v.width+1 then
 					rodbh.place()
-					if math.abs(v.y) == 0 then
-						rodbh.placeDown()
-					elseif math.abs(v.y) == v.height-1 then
-						rodbh.placeUp()
+					if v.verticalInit then
+						if math.abs(v.y) == 0 then rodbh.placeDown()
+						elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+					else
+						if math.abs(v.y) == 0 then rodbh.placeUp()
+						elseif math.abs(v.y) == v.height-1 then rodbh.placeDown() end
 					end
+				else
+					rodbh.moveForward()
 				end
 			end
 			xStart = 1
@@ -119,5 +123,3 @@ end
 
 parallel.waitForAny(stop, build)
 fs.delete("rodbhPos.tmp")
-
-end
