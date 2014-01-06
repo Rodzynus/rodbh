@@ -47,7 +47,7 @@ v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") -
 v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
 v.recId = tonumber(tArgs[4])
 v.roomType = "room"
-local xStart, yStart, zStart  = v.x + 1, v.y + 1, v.z + 1
+local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
 
 local function room()
 	for i = zStart, v.length, 1 do
