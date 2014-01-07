@@ -493,20 +493,21 @@ end
 
 function nextStep()
 	faceNorth()
-	moveForward()
+	if not moveForward() then return false end
 	variables.verticalBool = not variables.verticalBool
 	variables.horizontalBool = not variables.horizontalBool
+	return true
 end
 
 function nextLayer(placeBool)
 	placeBool = placeBool or false
 	if not variables.verticalBool then
-		moveDown()
+		if not moveDown() then return false end
 	else
-		moveUp()
+		if not moveUp() then return false end
 	end
 	if placeBool then
-		place()
+		if not place() then return false end
 	end
 	variables.horizontalBool = not variables.horizontalBool
 end
