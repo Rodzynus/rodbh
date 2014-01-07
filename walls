@@ -75,15 +75,6 @@ local function walls()
 				rodbh.horizontalFaceFront(true)
 				if k == v.width+1 then
 					rodbh.place()
-					--[[if i == 1 and (v.x < -1 or v.x > 0 or math.abs(v.y) > 0) and not v.extension then
-						faceSouth()
-						place()	
-						horizontalFaceFront(true)
-					elseif i == v.length then
-						faceNorth()
-						place()
-						horizontalFaceFront(true)
-					end]]--
 				else
 					rodbh.moveForward()
 				end
