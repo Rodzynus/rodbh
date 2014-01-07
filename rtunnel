@@ -122,4 +122,4 @@ if v.recId ~= nil then
 end
 
 parallel.waitForAny(stop, build)
-fs.delete("rodbhPos.tmp")
+fs.delete("/rodbh.tmp")
