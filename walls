@@ -1,4 +1,4 @@
-os.loadAPI("rodbh")
+os.loadAPI("/rodbh/rodbhAPI/rodbh")
 
 local tArgs = { ... }
 local v = {
