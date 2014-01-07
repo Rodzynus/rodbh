@@ -431,9 +431,8 @@ function place()
 				place()
 			end
 		end
-	else
-		return true
 	end
+	return true
 end
 
 function placeUp()
@@ -460,9 +459,8 @@ function placeUp()
 				placeUp()
 			end
 		end
-	else
-		return true
 	end
+	return true
 end
 
 function placeDown()
@@ -489,9 +487,8 @@ function placeDown()
 				placeDown()
 			end
 		end
-	else
-		return true
 	end
+	return true
 end
 
 function nextStep()
