@@ -1,0 +1,107 @@
+os.loadAPI("/rodbhAPI/rodbh")
+
+local tArgs = { ... }
+local v = {
+	x = 0; y = 0; z = 0;
+	xTmp = 0; yTmp = 0; zTmp = 0;
+	direction = 1; directionTmp = 1;
+	length = nil;
+	width = nil;
+	height = nil;
+	roomType = nil;
+	horizontalBool = false;
+	verticalBool = true;
+	recId = nil;
+	mode = "nofill";
+			--== Message printed when inventory is full ==--
+	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
+		--== Message printed when out of fuel ==--
+	fuelMsg = "Ludozerka chce cukierka!";
+		--== Message printed then bedrock was reached. ==--
+	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
+		--== Message printed when resuming program ==--
+	continueMsg = "Kontynuuje prace...";
+	endMsg = "Program zakonczony powodzeniem.";
+}
+
+--===== Going through table of arguments for part of needed variables =====--
+for i, val in ipairs(tArgs) do
+		if val == "left" then v.horizontalBool = false
+		elseif val == "right" then v.horizontalBool = true
+		elseif val == "up" then v.verticalBool = true
+		elseif val == "down" then v.verticalBool = false
+		end
+end
+
+rodbh.initTable(v)
+rodbh.loadVariables()
+
+v.length = assert(tonumber(tArgs[1]), "Nieprawidlowa dlugosc pomieszczenia.")
+v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") - 1
+v.recId = tonumber(tArgs[3])
+v.roomType = "rexcavate"
+local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
+
+local function excavate()
+	local horizontalLengthBool = true
+	while true do
+		for i = xStart, v.width + 1, 1 do
+			if i ~= xStart then 
+				rodbh.horizontalFaceFront(true)
+				if not rodbh.moveForward() then return true end
+			end
+			if horizontalLengthBool then
+				rodbh.faceNorth()
+			else
+				rodbh.faceSouth()
+			end
+			for j = zStart, v.length - 1, 1 do
+				if not rodbh.moveForward() then return true end
+			end
+			zStart = 1
+			horizontalLengthBool = not horizontalLengthBool
+		end
+		xStart = 1
+		v.horizontalBool = not v.horizontalBool
+		if not rodbh.moveDown() then return true end
+	end	
+end
+
+local function build()
+	term.clear()
+	term.setCursorPos(1,1)
+	print ("Aby przerwac wcisnij Q")
+	for i = 5, 1, -1 do
+		term.setCursorPos(1,2)
+		print ("Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpocznie sie za: " .. i)
+		sleep(1)
+	end
+	term.setCursorPos(1,3)
+	term.clearLine()
+	term.setCursorPos(1,2)
+	term.clearLine()
+	print ("Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpoczete.")
+	
+	excavate()
+	rodbh.goToStart()
+	v.mode = "all"
+	rodbh.dumpInv()
+	rodbh.sendAndPrint(v.endMsg)
+end
+
+local function stop()
+	while true do
+		id, code = os.pullEvent("key")
+		if code == 16 then
+			return true
+		end
+	end
+end
+
+--=== Main executing part of the program ===--
+if v.recId ~= nil then
+	rednet.open("right")
+end
+
+parallel.waitForAny(stop, build)
+fs.delete("/rodbh.tmp")

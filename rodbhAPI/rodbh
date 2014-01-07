@@ -74,8 +74,8 @@ function moveForward(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
-		return true
 	end
+	return true
 end
 
 function moveUp(noCheck)
@@ -104,8 +104,8 @@ function moveUp(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
-		return true
 	end
+	return true
 end
 
 function moveDown(noCheck)
@@ -130,8 +130,8 @@ function moveDown(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
-		return true
 	end
+	return true
 end
 
 function leftTurn()
