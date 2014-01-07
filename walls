@@ -23,6 +23,8 @@ local v = {
 	fuelMsg = "Ludozerka chce cukierka!";
 		--== Message printed then bedrock was reached. ==--
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
+		--== Message printed when there's something not diggable and not attackable blocking the path. ==--
+	sky = "Napotkalem przeszkode, ktorej nie moge wykopac/zabic, prawdopodobnie osiagnieto maksymalna wysokosc mapy.";
 		--== Message printed when resuming program. ==--
 	continueMsg = "Kontynuuje prace...";
 		--== Message printed when program successfully finished work. ==--
@@ -64,30 +66,30 @@ rodbh.initTable(v)
 local function walls()
 	for i = zStart, v.length, 1 do
 		if i ~= zStart then 
-			rodbh.nextStep()
+			if not rodbh.nextStep() then return false end
 		end
 		rodbh.horizontalFaceFront(false)
-		rodbh.place()
+		if not rodbh.place() then return false end
 		rodbh.horizontalFaceFront(true)
 		
 		for j = yStart, v.height, 1 do
 			if j ~= yStart then 
-				rodbh.nextLayer(true)
+				if not rodbh.nextLayer(true) then return false end
 			end
 			
 			for k = xStart, v.width+1, 1 do
 				if i == 1 and not (v.x == 0 and v.y == 0) and not (v.x == 0 and v.y == 1) and not (v.x == -1 and v.y == 0) and not v.extension then
 					rodbh.faceSouth()
-					rodbh.place()	
+					if not rodbh.place() then return false end	
 				elseif i == v.length then
 					rodbh.faceNorth()
-					rodbh.place()
+					if not rodbh.place() then return false end
 				end
 				rodbh.horizontalFaceFront(true)
 				if k == v.width+1 then
-					rodbh.place()
+					if not rodbh.place() then return false end
 				else
-					rodbh.moveForward()
+					if not rodbh.moveForward() then return false end
 				end
 			end
 			xStart = 1

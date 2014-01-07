@@ -17,8 +17,10 @@ local v = {
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when out of fuel ==--
 	fuelMsg = "Ludozerka chce cukierka!";
-		--== Message printed then bedrock was reached. ==--
+		--== Message printed when bedrock was reached. ==--
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
+		--== Message printed when there's something not diggable and not attackable blocking the path. ==--
+	sky = "Napotkalem przeszkode, ktorej nie moge wykopac/zabic, prawdopodobnie osiagnieto maksymalna wysokosc mapy.";
 		--== Message printed when resuming program ==--
 	continueMsg = "Kontynuuje prace...";
 	endMsg = "Program zakonczony powodzeniem.";
@@ -57,15 +59,15 @@ rodbh.initTable(v)
 local function nofill()
 	for i = zStart, v.length, 1 do
 		if i ~= zStart then
-			rodbh.nextStep()
+			if not rodbh.nextStep() then return false
 		end
 		for j = yStart, v.height, 1 do
 			if j ~= yStart then
-				rodbh.nextLayer()
+				if not rodbh.nextLayer() then return false
 			end
 			rodbh.horizontalFaceFront(true)
 			for k = 1, v.width, 1 do
-				rodbh.moveForward()
+				if not rodbh.moveForward() then return false
 			end
 			xStart = 1
 		end

@@ -19,6 +19,8 @@ local v = {
 	fuelMsg = "Ludozerka chce cukierka!";
 		--== Message printed then bedrock was reached. ==--
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
+		--== Message printed when there's something not diggable and not attackable blocking the path. ==--
+	sky = "Napotkalem przeszkode, ktorej nie moge wykopac/zabic, prawdopodobnie osiagnieto maksymalna wysokosc mapy.";
 		--== Message printed when resuming program ==--
 	continueMsg = "Kontynuuje prace...";
 	endMsg = "Program zakonczony powodzeniem.";
