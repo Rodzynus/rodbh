@@ -1,4 +1,4 @@
-os.loadAPI("/rodbhAPI/rodbh")
+os.loadAPI("rodbhAPI/rodbh")
 local function resume()
 	if fs.exists("/rodbh.tmp") then
 		rodbhTmp = io.open("/rodbh.tmp", "r")
