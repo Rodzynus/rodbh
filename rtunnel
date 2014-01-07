@@ -104,7 +104,7 @@ local function build()
 	rodbh.goToStart()
 	v.mode = "all"
 	rodbh.dumpInv()
-	rodbh.sendAndPrint(endMsg)
+	rodbh.sendAndPrint(v.endMsg)
 end
 
 local function stop()
