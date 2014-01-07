@@ -17,12 +17,13 @@ local v = {
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when out of fuel ==--
 	fuelMsg = "Ludozerka chce cukierka!";
-		--== Message printed then bedrock was reached. ==--
+		--== Message printed when bedrock was reached. ==--
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
 		--== Message printed when there's something not diggable and not attackable blocking the path. ==--
 	sky = "Napotkalem przeszkode, ktorej nie moge wykopac/zabic, prawdopodobnie osiagnieto maksymalna wysokosc mapy.";
 		--== Message printed when resuming program ==--
 	continueMsg = "Kontynuuje prace...";
+		--== Message printed when successfully finished program. ==--
 	endMsg = "Program zakonczony powodzeniem.";
 }
 
@@ -50,6 +51,8 @@ if not loadVariables() then
 	v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") - 1
 	v.recId = tonumber(tArgs[3])
 	v.roomType = "rexcavate"
+	v.startMsg1 = "Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpocznie sie za: "
+	v.startMsg2 = "Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpoczete."
 end
 local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
 rodbh.initTable(v)
@@ -82,17 +85,16 @@ end
 local function build()
 	term.clear()
 	term.setCursorPos(1,1)
-	print ("Aby przerwac wcisnij Q")
+	print("Aby przerwac wcisnij Q")
 	for i = 5, 1, -1 do
-		term.setCursorPos(1,2)
-		print ("Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpocznie sie za: " .. i)
+		rodbh.sendAndPrint(v.startMsg1 .. i)
 		sleep(1)
+		term.setCursorPos(1,3)
+		term.clearLine()
+		term.setCursorPos(1,2)
+		term.clearLine()
 	end
-	term.setCursorPos(1,3)
-	term.clearLine()
-	term.setCursorPos(1,2)
-	term.clearLine()
-	print ("Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpoczete.")
+	rodbh.sendAndPrint(v.startMsg2)
 	
 	excavate()
 	rodbh.goToStart()

@@ -1,27 +1,33 @@
 os.loadAPI("/rodbh/rodbhAPI/rodbh")
+
+local function stop()
+	while true do
+		id, code = os.pullEvent("key")
+		if code == 16 then
+			return true
+		end
+	end
+end
+
 local function resume()
 	if fs.exists("/rodbh.tmp") then
 		rodbhTmp = io.open("/rodbh.tmp", "r")
 		local v = textutils.unserialize(rodbhTmp:read("*a"))
 		rodbhTmp:close()
+		term.clear()
 		print("Temp file detected... Running " .. v.roomType .. " program from saved position.")
-		print("Program will start in 15 seconds.")
 		print("Hit Q to stop.")
-		local mainTimer = os.startTimer(15)
-		while true do
-			id, key = os.pullEvent()
-			if id == "timer" and key == mainTimer then
-				shell.run(v.roomType)
-				return true
-			elseif id == "key" and key == 16 then
-				return false
-			end
+		for i = 15, 1, -1 do
+			print("Program will start in " .. i .. " seconds.")
+			sleep(1)
+			term.setCursorPos(1,3)
+			term.clearLine()
 		end
+		print("Program " .. v.roomType .. " started.")
+		shell.run(v.roomType)
 	else
 		print("Temp filed not found. Computer will now enter standard prompt mode.")
 	end
 end
 
-if not resume() then
-	fs.delete("/rodbh.tmp")
-end
+parallel.waitForAny(resume, stop)
