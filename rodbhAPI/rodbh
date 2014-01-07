@@ -37,13 +37,11 @@ function moveForward(noCheck)
 				turtle.suck()
 			else
 				goToStart()
-				variables.excavateFinish = true
-				sendAndPrint(variables.bedrockMsg)
+				sendAndPrint(variables.sky)
 				return false
 			end
 		elseif not turtle.dig() then
 			goToStart()
-			variables.excavateFinish = true
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
@@ -71,13 +69,11 @@ function moveUp(noCheck)
 				turtle.suckUp()
 			else
 				goToStart()
-				variables.excavateFinish = true
-				sendAndPrint(variables.bedrockMsg)
+				sendAndPrint(variables.sky)
 				return false
 			end
 		elseif not turtle.digUp() then
 			goToStart()
-			variables.excavateFinish = true
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
@@ -100,7 +96,7 @@ function moveDown(noCheck)
 			if turtle.attackDown() then
 				turtle.suckDown()
 			else
-				sendAndPrint(variables.bedrockMsg)
+				sendAndPrint(variables.sky)
 				return false
 			end
 		elseif not turtle.digDown() then
@@ -414,6 +410,8 @@ function place()
 			turtle.select(1)
 			if not turtle.place() then
 				if not turtle.attack() then
+					goToStart()
+					sendAndPrint(variables.sky)
 					return false
 				else
 					turtle.suck()
@@ -425,6 +423,8 @@ function place()
 			end
 		else
 			if not turtle.dig() then
+				goToStart()
+				sendAndPrint(variables.bedrockMsg)
 				return false
 			else
 				sleep(0)
@@ -442,6 +442,8 @@ function placeUp()
 			turtle.select(1)
 			if not turtle.placeUp() then
 				if not turtle.attackUp() then
+					goToStart()
+					sendAndPrint(variables.sky)
 					return false
 				else
 					turtle.suckUp()
@@ -453,6 +455,8 @@ function placeUp()
 			end
 		else
 			if not turtle.digUp() then
+				goToStart()
+				sendAndPrint(variables.bedrockMsg)
 				return false
 			else
 				sleep(0)
@@ -470,6 +474,8 @@ function placeDown()
 			turtle.select(1)
 			if not turtle.placeDown() then
 				if not turtle.attackDown() then
+					goToStart()
+					sendAndPrint(variables.sky)
 					return false
 				else
 					turtle.suckDown()
@@ -481,6 +487,8 @@ function placeDown()
 			end
 		else
 			if not turtle.digDown() then
+				goToStart()
+				sendAndPrint(variables.bedrockMsg)
 				return false
 			else
 				sleep(0)
@@ -510,4 +518,5 @@ function nextLayer(placeBool)
 		if not place() then return false end
 	end
 	variables.horizontalBool = not variables.horizontalBool
+	return true
 end

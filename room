@@ -23,6 +23,8 @@ local v = {
 	fuelMsg = "Ludozerka chce cukierka!";
 		--== Message printed then bedrock was reached. ==--
 	bedrockMsg = "Osiagnieto poziom bedrocka.\nWracam do punktu rozpoczecia pracy.";
+		--== Message printed when there's something not diggable and not attackable blocking the path. ==--
+	sky = "Napotkalem przeszkode, ktorej nie moge wykopac/zabic, prawdopodobnie osiagnieto maksymalna wysokosc mapy.";
 		--== Message printed when resuming program ==--
 	continueMsg = "Kontynuuje prace...";
 	endMsg = "Program zakonczony powodzeniem.";
@@ -62,52 +64,45 @@ rodbh.initTable(v)
 local function room()
 	for i = zStart, v.length, 1 do
 		if i ~= zStart then
-			rodbh.nextStep()
+			if not rodbh.nextStep() then return false end
 			rodbh.horizontalFaceFront(false)
-			rodbh.place()
+			if not rodbh.place() then return false end
 			rodbh.horizontalFaceFront(true)
 		end
 		if i == 1 then
 			rodbh.horizontalFaceFront(false)
-			rodbh.place()
+			if not rodbh.place() then return false end
 			rodbh.horizontalFaceFront(true)
 		end
 		for j = yStart, v.height, 1 do
 			if j ~= yStart then
-				rodbh.nextLayer(true)
+				if not rodbh.nextLayer(true) then return false end
 			end
 			
 			for k = xStart, v.width+1, 1 do
 			
 				if v.verticalInit then
-					if math.abs(v.y) == 0 then rodbh.placeDown()
-					elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
+					if math.abs(v.y) == 0 then if not rodbh.placeDown() then return false end
+					elseif math.abs(v.y) == v.height-1 then if not rodbh.placeUp() then return false end end
 				else
-					if math.abs(v.y) == 0 then rodbh.placeUp()
-					elseif math.abs(v.y) == v.height-1 then rodbh.placeDown() end
+					if math.abs(v.y) == 0 then if not rodbh.placeUp() then return false end
+					elseif math.abs(v.y) == v.height-1 then if not rodbh.placeDown() then return false end end
 				end
 				
 				if i == 1 and not (v.x == 0 and v.y == 0) and not (v.x == 0 and v.y == 1) and not (v.x == -1 and v.y == 0) and not v.extension then
 					rodbh.faceSouth()
-					rodbh.place()	
+					if not rodbh.place() then return false end	
 				elseif i == v.length then
 					rodbh.faceNorth()
-					rodbh.place()
+					if not rodbh.place() then return false end
 				end
 				
 				rodbh.horizontalFaceFront(true)
 				
 				if k == v.width+1 then
-					rodbh.place()
-					if v.verticalInit then
-						if math.abs(v.y) == 0 then rodbh.placeDown()
-						elseif math.abs(v.y) == v.height-1 then rodbh.placeUp() end
-					else
-						if math.abs(v.y) == 0 then rodbh.placeUp()
-						elseif math.abs(v.y) == v.height-1 then rodbh.placeDown() end
-					end
+					if not rodbh.place() then return false end
 				else
-					rodbh.moveForward()
+					if not rodbh.moveForward() return false end
 				end
 			end
 			xStart = 1
