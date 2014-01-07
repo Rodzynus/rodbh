@@ -1,26 +1,10 @@
 --====== Make local table to keep variables from main program ======--
 local variables = {}
 
-function test()
-	print("test")
-end
 --======= Replace table variables with reference of given table ======--
 function initTable(t)
 	assert(type(t) == "table", "Invalid argument in function 'initTable', expected table")
 	variables = t
-end
-
---======== Hopefuly doing cleanup of table after program finished, is it even nessesery? =======--
-function delTable()
-	variables = nil
-end
-
-function loadVariables()
-	if fs.exists("/rodbh.tmp") then
-		local rodbhTmp = io.open("/rodbh.tmp", "r")
-		variables = textutils.unserialize(rodbhTmp:read("*a"))
-		rodbhTmp:close()
-	end
 end
 
 --======= Function converting string to boolean used for importing data from file ======--

@@ -1,26 +1,20 @@
 os.loadAPI("/rodbhAPI/rodbh")
-
 local function resume()
 	if fs.exists("/rodbh.tmp") then
-		for line in io.lines("/rodbh.tmp") do
-			for k, val in string.gmatch(line, "(%w+)=(%w+)") do
-				if k == "roomType" then
-					print("Temp file detected... Running " .. val .. " program from saved position.")
-					print("Hit Q to stop.")
-					mainTimer = os.startTimer(15)
-					for i = 15, 1, -1 do
-						id, key = os.pullEvent()
-						if id == "timer" and key == mainTimer then
-							shell.run(val)
-							return true
-						elseif id == "timer" and key == secondTimer then
-							print("Program will resume in... " .. i .. "s.")
-						elseif id == "key" and key == 16 then
-							return false
-						end
-						secondTimer = os.startTimer(1)
-					end
-				end
+		rodbhTmp = io.open("/rodbh.tmp", "r")
+		local v = textutils.unserialize(rodbhTmp:read("*a"))
+		rodbhTmp:close()
+		print("Temp file detected... Running " .. v.roomType .. " program from saved position.")
+		print("Program will start in 15 seconds.")
+		print("Hit Q to stop.")
+		local mainTimer = os.startTimer(15)
+		while true do
+			id, key = os.pullEvent()
+			if id == "timer" and key == mainTimer then
+				shell.run(v.roomType)
+				return true
+			elseif id == "key" and key == 16 then
+				return false
 			end
 		end
 	else

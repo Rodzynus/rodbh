@@ -24,24 +24,35 @@ local v = {
 	endMsg = "Program zakonczony powodzeniem.";
 }
 
---===== Going through table of arguments for part of needed variables =====--
-for i, val in ipairs(tArgs) do
-		if val == "left" then v.horizontalBool = false
-		elseif val == "right" then v.horizontalBool = true
-		elseif val == "up" then v.verticalBool = true
-		elseif val == "down" then v.verticalBool = false
-		end
+local function loadVariables()
+	if fs.exists("/rodbh.tmp") then
+		local rodbhTmp = io.open("/rodbh.tmp", "r")
+		v = textutils.unserialize(rodbhTmp:read("*a"))
+		rodbhTmp:close()
+		return true
+	else
+		return false
+	end
 end
 
-rodbh.initTable(v)
-rodbh.loadVariables()
-
-v.length = assert(tonumber(tArgs[1]), "Nieprawidlowa dlugosc pomieszczenia.")
-v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") - 1
-v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
-v.recId = tonumber(tArgs[4])
-v.roomType = "nofill"
+if not loadVariables() then
+	--===== Going through table of arguments for part of needed variables =====--
+	for i, val in ipairs(tArgs) do
+			if val == "left" then v.horizontalBool = false
+			elseif val == "right" then v.horizontalBool = true
+			elseif val == "up" then v.verticalBool = true
+			elseif val == "down" then v.verticalBool = false
+			end
+	end
+	v.verticalInit = v.verticalBool
+	v.length = assert(tonumber(tArgs[1]), "Nieprawidlowa dlugosc pomieszczenia.")
+	v.width = assert(tonumber(tArgs[2]), "Nieprawidlowa szerokosc pomieszczenia.") - 1
+	v.height = assert(tonumber(tArgs[3]), "Nieprawidlowa wysokosc pomieszczenia.")
+	v.recId = tonumber(tArgs[4])
+	v.roomType = "nofill"
+end
 local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
+rodbh.initTable(v)
 
 local function nofill()
 	for i = zStart, v.length, 1 do
