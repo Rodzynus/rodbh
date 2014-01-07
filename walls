@@ -76,7 +76,7 @@ local function walls()
 			end
 			
 			for k = xStart, v.width+1, 1 do
-				if i == 1 and (v.x < -1 or v.x > 0 or math.abs(v.y) > 0) and not v.extension then
+				if i == 1 and not (v.x == 0 and v.y == 0) and not (v.x == 0 and v.y == 1) and not (v.x == -1 and v.y == 0) and not v.extension then
 					rodbh.faceSouth()
 					rodbh.place()	
 				elseif i == v.length then
