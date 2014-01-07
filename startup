@@ -1,3 +1,6 @@
+local path = shell.path()
+path = path .. ":/rodbh" 
+shell.setPath(path)
 os.loadAPI("/rodbh/rodbhAPI/rodbh")
 
 local function stop()
