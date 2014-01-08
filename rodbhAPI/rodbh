@@ -31,22 +31,25 @@ end
 function moveForward(noCheck)
 	noCheck = noCheck or false
 	if not noCheck then checkAll() end
+	
 	if not turtle.forward() then
 		if not turtle.detect() then
 			if turtle.attack() then
 				turtle.suck()
 			else
-				goToStart()
-				sendAndPrint(variables.sky)
+				sendAndPrint(variables.skyMsg)
 				return false
 			end
 		elseif not turtle.dig() then
-			goToStart()
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0)
-		moveForward(true)
+		sleep(0.5)
+		if moveForward(true) then
+			return true
+		else
+			return false
+		end
 	else
 		if variables.direction == 1 then variables.z = variables.z + 1
 		elseif variables.direction == 2 then variables.x = variables.x - 1
@@ -56,62 +59,70 @@ function moveForward(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
+		return true
 	end
-	return true
 end
 
 function moveUp(noCheck)
 	noCheck = noCheck or false
 	if not noCheck then checkAll() end
+	
 	if not turtle.up() then
 		if not turtle.detectUp() then
 			if turtle.attackUp() then
 				turtle.suckUp()
 			else
-				goToStart()
-				sendAndPrint(variables.sky)
+				sendAndPrint(variables.skyMsg)
 				return false
 			end
 		elseif not turtle.digUp() then
-			goToStart()
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0)
-		moveUp(true)
+		sleep(0.5)
+		if moveUp(true) then
+			return true
+		else
+			return false
+		end
 	else
 		variables.y = variables.y + 1
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
+		return true
 	end
-	return true
 end
 
 function moveDown(noCheck)
 	noCheck = noCheck or false
 	if not noCheck then checkAll() end
+	
 	if not turtle.down() then
 		if not turtle.detectDown() then
 			if turtle.attackDown() then
 				turtle.suckDown()
 			else
-				sendAndPrint(variables.sky)
+				sendAndPrint(variables.skyMsg)
 				return false
 			end
 		elseif not turtle.digDown() then
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0)
-		moveDown(true)
+		sleep(0.5)
+		if moveDown(true) then
+			return true
+		else
+			return false
+		end
 	else
 		variables.y = variables.y - 1
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
+		return true
 	end
-	return true
 end
 
 function leftTurn()
@@ -403,100 +414,115 @@ function checkAll()
 	end	
 end
 
-function place()
-	checkAll()
-	if not turtle.compare(1) then
-		if not turtle.detect() then
-			turtle.select(1)
-			if not turtle.place() then
-				if not turtle.attack() then
-					goToStart()
-					sendAndPrint(variables.sky)
-					return false
-				else
-					turtle.suck()
-					sleep(0)
-					place()
-				end
-			else
+function place(nocheck)
+	nocheck = nocheck or false
+	if not nocheck then checkAll() end
+	
+	if turtle.compare(1) then
+		return true
+	elseif not turtle.detect() then
+		turtle.select(1)
+		if turtle.place() then
+			return true
+		elseif turtle.attack() then
+			turtle.suck()
+			sleep(0.5)
+			if place(true) then
 				return true
+			else
+				return false
 			end
 		else
-			if not turtle.dig() then
-				goToStart()
-				sendAndPrint(variables.bedrockMsg)
-				return false
+			sendAndPrint(variables.skyMsg)
+			return false
+		end
+	else		
+		if turtle.dig() then
+			sleep(0.5)
+			if place(true) then
+				return true
 			else
-				sleep(0)
-				place()
+				return false
 			end
+		else
+			sendAndPrint(variables.bedrockMsg)
+			return false
 		end
 	end
-	return true
 end
 
-function placeUp()
-	checkAll()
-	if not turtle.compareUp(1) then
-		if not turtle.detectUp() then
-			turtle.select(1)
-			if not turtle.placeUp() then
-				if not turtle.attackUp() then
-					goToStart()
-					sendAndPrint(variables.sky)
-					return false
-				else
-					turtle.suckUp()
-					sleep(0)
-					placeUp()
-				end
-			else
+function placeUp(nocheck)
+	nocheck = nocheck or false
+	if not nocheck then checkAll() end
+	
+	if turtle.compareUp(1) then
+		return true
+	elseif not turtle.detectUp() then
+		turtle.select(1)
+		if turtle.placeUp() then
+			return true
+		elseif turtle.attackUp() then
+			turtle.suckUp()
+			sleep(0.5)
+			if placeUp(true) then
 				return true
+			else
+				return false
 			end
 		else
-			if not turtle.digUp() then
-				goToStart()
-				sendAndPrint(variables.bedrockMsg)
-				return false
+			sendAndPrint(variables.skyMsg)
+			return false
+		end
+	else		
+		if turtle.digUp() then
+			sleep(0.5)
+			if placeUp(true) then
+				return true
 			else
-				sleep(0)
-				placeUp()
+				return false
 			end
+		else
+			sendAndPrint(variables.bedrockMsg)
+			return false
 		end
 	end
-	return true
 end
 
-function placeDown()
-	checkAll()
-	if not turtle.compareDown(1) then
-		if not turtle.detectDown() then
-			turtle.select(1)
-			if not turtle.placeDown() then
-				if not turtle.attackDown() then
-					goToStart()
-					sendAndPrint(variables.sky)
-					return false
-				else
-					turtle.suckDown()
-					sleep(0)
-					placeDown()
-				end
-			else
+function placeDown(nocheck)
+	nocheck = nocheck or false
+	if not nocheck then checkAll() end
+	
+	if turtle.compareDown(1) then
+		return true
+	elseif not turtle.detectDown() then
+		turtle.select(1)
+		if turtle.placeDown() then
+			return true
+		elseif turtle.attackDown() then
+			turtle.suckDown()
+			sleep(0.5)
+			if placeDown(true) then
 				return true
+			else
+				return false
 			end
 		else
-			if not turtle.digDown() then
-				goToStart()
-				sendAndPrint(variables.bedrockMsg)
-				return false
+			sendAndPrint(variables.skyMsg)
+			return false
+		end
+	else		
+		if turtle.digDown() then
+			sleep(0.5)
+			if placeDown(true) then
+				return true
 			else
-				sleep(0)
-				placeDown()
+				return false
 			end
+		else
+			sendAndPrint(variables.bedrockMsg)
+			return false
 		end
 	end
-	return true
 end
 
 function nextStep()
