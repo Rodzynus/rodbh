@@ -44,7 +44,7 @@ function moveForward(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0.5)
+		sleep(0.7)
 		if moveForward(true) then
 			return true
 		else
@@ -79,7 +79,7 @@ function moveUp(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0.5)
+		sleep(0.7)
 		if moveUp(true) then
 			return true
 		else
@@ -110,7 +110,7 @@ function moveDown(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0.5)
+		sleep(0.7)
 		if moveDown(true) then
 			return true
 		else
@@ -426,7 +426,7 @@ function place(nocheck)
 			return true
 		elseif turtle.attack() then
 			turtle.suck()
-			sleep(0.5)
+			sleep(0.7)
 			if place(true) then
 				return true
 			else
@@ -438,7 +438,7 @@ function place(nocheck)
 		end
 	else		
 		if turtle.dig() then
-			sleep(0.5)
+			sleep(0.7)
 			if place(true) then
 				return true
 			else
@@ -463,7 +463,7 @@ function placeUp(nocheck)
 			return true
 		elseif turtle.attackUp() then
 			turtle.suckUp()
-			sleep(0.5)
+			sleep(0.7)
 			if placeUp(true) then
 				return true
 			else
@@ -475,7 +475,7 @@ function placeUp(nocheck)
 		end
 	else		
 		if turtle.digUp() then
-			sleep(0.5)
+			sleep(0.7)
 			if placeUp(true) then
 				return true
 			else
@@ -500,7 +500,7 @@ function placeDown(nocheck)
 			return true
 		elseif turtle.attackDown() then
 			turtle.suckDown()
-			sleep(0.5)
+			sleep(0.7)
 			if placeDown(true) then
 				return true
 			else
@@ -512,7 +512,7 @@ function placeDown(nocheck)
 		end
 	else		
 		if turtle.digDown() then
-			sleep(0.5)
+			sleep(0.7)
 			if placeDown(true) then
 				return true
 			else
