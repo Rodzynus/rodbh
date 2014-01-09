@@ -11,6 +11,7 @@ local v = {
 	roomType = nil;
 	horizontalBool = false;
 	verticalBool = true;
+	horizontalLenghtBool = true;
 	recId = nil;
 	mode = "nofill";
 	tries = 0;
@@ -59,14 +60,13 @@ local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v
 rodbh.initTable(v)
 
 local function excavate()
-	local horizontalLengthBool = true
 	while true do
 		for i = xStart, v.width + 1, 1 do
 			if i ~= xStart then 
 				rodbh.horizontalFaceFront(true)
 				if not rodbh.moveForward() then return true end
 			end
-			if horizontalLengthBool then
+			if v.horizontalLengthBool then
 				rodbh.faceNorth()
 			else
 				rodbh.faceSouth()
@@ -75,7 +75,7 @@ local function excavate()
 				if not rodbh.moveForward() then return true end
 			end
 			zStart = 1
-			horizontalLengthBool = not horizontalLengthBool
+			v.horizontalLengthBool = not v.horizontalLengthBool
 		end
 		xStart = 1
 		v.horizontalBool = not v.horizontalBool
