@@ -44,7 +44,7 @@ function moveForward(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0.7)
+		sleep(1)
 		if moveForward(true) then
 			return true
 		else
@@ -79,7 +79,7 @@ function moveUp(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0.7)
+		sleep(1)
 		if moveUp(true) then
 			return true
 		else
@@ -110,7 +110,7 @@ function moveDown(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(0.7)
+		sleep(1)
 		if moveDown(true) then
 			return true
 		else
