@@ -12,6 +12,7 @@ local v = {
 	horizontalBool = false;
 	recId = nil;
 	mode = "fill";
+	tries = 0;
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when out of fuel ==--

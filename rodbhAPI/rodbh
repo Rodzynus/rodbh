@@ -1,6 +1,5 @@
 --====== Make local table to keep variables from main program ======--
 local variables = {}
-
 --======= Replace table variables with reference of given table ======--
 function initTable(t)
 	assert(type(t) == "table", "Invalid argument in function 'initTable', expected table")
@@ -31,12 +30,12 @@ end
 function moveForward(noCheck)
 	noCheck = noCheck or false
 	if not noCheck then checkAll() end
-	
 	if not turtle.forward() then
 		if not turtle.detect() then
-			if turtle.attack() then
-				turtle.suck()
-			else
+			turtle.attack()
+			turtle.suck()
+			variables.tries = variables.tries + 1
+			if variables.tries >= 20 then
 				sendAndPrint(variables.skyMsg)
 				return false
 			end
@@ -44,7 +43,7 @@ function moveForward(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(1)
+		sleep(0)
 		if moveForward(true) then
 			return true
 		else
@@ -59,6 +58,7 @@ function moveForward(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
+		variables.tries = 0
 		return true
 	end
 end
@@ -69,9 +69,10 @@ function moveUp(noCheck)
 	
 	if not turtle.up() then
 		if not turtle.detectUp() then
-			if turtle.attackUp() then
-				turtle.suckUp()
-			else
+			turtle.attackUp()
+			turtle.suckUp()
+			variables.tries = variables.tries + 1
+			if variables.tries >= 20 then
 				sendAndPrint(variables.skyMsg)
 				return false
 			end
@@ -79,7 +80,7 @@ function moveUp(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(1)
+		sleep(0)
 		if moveUp(true) then
 			return true
 		else
@@ -90,6 +91,7 @@ function moveUp(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
+		variables.tries = 0
 		return true
 	end
 end
@@ -100,9 +102,10 @@ function moveDown(noCheck)
 	
 	if not turtle.down() then
 		if not turtle.detectDown() then
-			if turtle.attackDown() then
-				turtle.suckDown()
-			else
+			turtle.attackDown()
+			turtle.suckDown()
+			variables.tries = variables.tries + 1
+			if variables.tries >= 20 then
 				sendAndPrint(variables.skyMsg)
 				return false
 			end
@@ -110,7 +113,7 @@ function moveDown(noCheck)
 			sendAndPrint(variables.bedrockMsg)
 			return false
 		end
-		sleep(1)
+		sleep(0)
 		if moveDown(true) then
 			return true
 		else
@@ -121,6 +124,7 @@ function moveDown(noCheck)
 		local rodbhTmp = io.open("/rodbh.tmp", "w")
 		rodbhTmp:write(textutils.serialize(variables))
 		rodbhTmp:close()
+		variables.tries = 0
 		return true
 	end
 end
@@ -419,26 +423,28 @@ function place(nocheck)
 	if not nocheck then checkAll() end
 	
 	if turtle.compare(1) then
+		variables.tries = 0
 		return true
 	elseif not turtle.detect() then
 		turtle.select(1)
 		if turtle.place() then
+			variables.tries = 0
 			return true
-		elseif turtle.attack() then
+		else
+			turtle.attack()
 			turtle.suck()
-			sleep(0.7)
-			if place(true) then
+			variables.tries = variables.tries + 1
+			if variables.tries >= 30 then
+				sendAndPrint(variables.skyMsg)
+				return false
+			elseif place(true) then
 				return true
 			else
 				return false
 			end
-		else
-			sendAndPrint(variables.skyMsg)
-			return false
 		end
 	else		
 		if turtle.dig() then
-			sleep(0.7)
 			if place(true) then
 				return true
 			else
@@ -455,27 +461,29 @@ function placeUp(nocheck)
 	nocheck = nocheck or false
 	if not nocheck then checkAll() end
 	
-	if turtle.compareUp(1) then
+	if turtle.compare(1) then
+		variables.tries = 0
 		return true
 	elseif not turtle.detectUp() then
 		turtle.select(1)
 		if turtle.placeUp() then
+			variables.tries = 0
 			return true
-		elseif turtle.attackUp() then
+		else
+			turtle.attackUp()
 			turtle.suckUp()
-			sleep(0.7)
-			if placeUp(true) then
+			variables.tries = variables.tries + 1
+			if variables.tries >= 30 then
+				sendAndPrint(variables.skyMsg)
+				return false
+			elseif placeUp(true) then
 				return true
 			else
 				return false
 			end
-		else
-			sendAndPrint(variables.skyMsg)
-			return false
 		end
 	else		
 		if turtle.digUp() then
-			sleep(0.7)
 			if placeUp(true) then
 				return true
 			else
@@ -493,26 +501,28 @@ function placeDown(nocheck)
 	if not nocheck then checkAll() end
 	
 	if turtle.compareDown(1) then
+		variables.tries = 0
 		return true
 	elseif not turtle.detectDown() then
 		turtle.select(1)
 		if turtle.placeDown() then
+			variables.tries = 0
 			return true
-		elseif turtle.attackDown() then
+		else
+			turtle.attackDown()
 			turtle.suckDown()
-			sleep(0.7)
-			if placeDown(true) then
+			variables.tries = variables.tries + 1
+			if variables.tries >= 30 then
+				sendAndPrint(variables.skyMsg)
+				return false
+			elseif placeDown(true) then
 				return true
 			else
 				return false
 			end
-		else
-			sendAndPrint(variables.skyMsg)
-			return false
 		end
 	else		
 		if turtle.digDown() then
-			sleep(0.7)
 			if placeDown(true) then
 				return true
 			else
