@@ -34,3 +34,4 @@ local function resume()
 end
 
 parallel.waitForAny(resume, stop)
+fs.delete("/rodbh.tmp")
