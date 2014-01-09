@@ -29,7 +29,7 @@ end
 --=========== Functions responsible for moving turtle with location memory =======--
 function moveForward(noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll() end
+	if not noCheck then checkAll("fuel") end
 	if not turtle.forward() then
 		if not turtle.detect() then
 			turtle.attack()
@@ -65,7 +65,7 @@ end
 
 function moveUp(noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll() end
+	if not noCheck then checkAll("fuel") end
 	
 	if not turtle.up() then
 		if not turtle.detectUp() then
@@ -98,7 +98,7 @@ end
 
 function moveDown(noCheck)
 	noCheck = noCheck or false
-	if not noCheck then checkAll() end
+	if not noCheck then checkAll("fuel") end
 	
 	if not turtle.down() then
 		if not turtle.detectDown() then
@@ -409,18 +409,24 @@ function getAll()
 	goToEnd()
 end
 
-function checkAll()
-	if not checkInv() then getAll()
-	elseif not checkFuel() then
-		if not getFuel() then getAll() end
-	elseif not checkFill() then
-		if not getFill() then getAll() end
-	end	
+function checkAll(mode)
+	if mode == "fill" then
+		if not checkFill() then
+			if not getFill() then getAll() return true end
+		end
+	elseif mode == "fuel" then
+		if not checkFuel() then
+			if not getFuel() then getAll() return true end
+		end
+	elseif mode == "torch" then
+		if not checkTorch() then getAll() return true end
+	end
+	if not checkInv() then getAll() return true end
 end
 
 function place(nocheck)
 	nocheck = nocheck or false
-	if not nocheck then checkAll() end
+	if not nocheck then checkAll("fill") end
 	
 	if turtle.compare(1) then
 		variables.tries = 0
@@ -459,7 +465,7 @@ end
 
 function placeUp(nocheck)
 	nocheck = nocheck or false
-	if not nocheck then checkAll() end
+	if not nocheck then checkAll("fill") end
 	
 	if turtle.compare(1) then
 		variables.tries = 0
@@ -498,7 +504,7 @@ end
 
 function placeDown(nocheck)
 	nocheck = nocheck or false
-	if not nocheck then checkAll() end
+	if not nocheck then checkAll("fill") end
 	
 	if turtle.compareDown(1) then
 		variables.tries = 0
