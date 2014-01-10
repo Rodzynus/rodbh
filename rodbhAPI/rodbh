@@ -26,6 +26,15 @@ function sendAndPrint(message)
 	end
 end
 
+--=== Function that will clear specified range of lines in terminal. ===--
+function clearLines(cStart, cEnd)
+	for i = cStart, cEnd do
+		term.setCursorPos(1, i)
+		term.clearLine()
+	end
+	term.setCursorPos(1, cStart)
+end
+
 --=========== Functions responsible for moving turtle with location memory =======--
 function moveForward(noCheck)
 	noCheck = noCheck or false
