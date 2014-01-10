@@ -8,6 +8,8 @@ local v = {
 	length = nil;
 	width = nil;
 	height = nil;
+	xStart = 1;
+	zStart = 1;
 	roomType = nil;
 	horizontalBool = false;
 	recId = nil;
@@ -56,16 +58,18 @@ local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v
 rodbh.initTable(v)
 
 local function buildCeiling()
-	for i = zStart, v.length, 1 do
-		if i ~= zStart then
+	for i = v.zStart, v.length, 1 do
+		if i ~= v.zStart then
+			v.zStart = i
 			if not rodbh.nextStep() then return false end
 		end
 		rodbh.horizontalFaceFront(true)
-		for j = xStart, v.width, 1 do
+		for j = v.xStart, v.width, 1 do
+			v.xStart = j
 			if not rodbh.placeUp() then return false end
 			if not rodbh.moveForward() then return false end
 		end
-		xStart = 1
+		v.xStart = 1
 		if not rodbh.placeUp() then return false end
 	end 
 end

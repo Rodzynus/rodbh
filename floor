@@ -8,6 +8,8 @@ local v = {
 	length = nil;
 	width = nil;
 	height = nil;
+	xStart = 1;
+	zStart = 1;
 	roomType = nil;
 	horizontalBool = false;
 	recId = nil;
@@ -52,20 +54,21 @@ if not loadVariables() then
 	v.startMsg1 = "Ukladanie podlogi o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpocznie sie za: "
 	v.startMsg2 = "Ukladanie podlogi o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpoczete."
 end
-local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
 rodbh.initTable(v)
 
 local function buildFloor()
-	for i = zStart, v.length, 1 do
-		if i ~= zStart then
+	for i = v.zStart, v.length, 1 do
+		if i ~= v.zStart then
+			v.zStart = i
 			if not rodbh.nextStep() then return false end
 		end
 		rodbh.horizontalFaceFront(true)
-		for j = xStart, v.width, 1 do
+		for j = v.xStart, v.width, 1 do
+			v.xStart = j
 			if not rodbh.placeDown() then return false end
 			if not rodbh.moveForward() then return false end
 		end
-		xStart = 1
+		v.xStart = 1
 		if not rodbh.placeDown() then return false end
 	end 
 end
