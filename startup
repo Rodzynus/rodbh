@@ -18,15 +18,17 @@ local function resume()
 		local v = textutils.unserialize(rodbhTmp:read("*a"))
 		rodbhTmp:close()
 		term.clear()
+		term.setCursorPos(1,1)
 		print("Temp file detected... Running " .. v.roomType .. " program from saved position.")
 		print("Hit Q to stop.")
 		for i = 15, 1, -1 do
 			print("Program will start in " .. i .. " seconds.")
 			sleep(1)
-			term.setCursorPos(1,3)
+			term.setCursorPos(1,4)
 			term.clearLine()
 		end
 		print("Program " .. v.roomType .. " started.")
+		term.setCursorPos(1,5)
 		shell.run(v.roomType)
 	else
 		print("Temp filed not found. Computer will now enter standard prompt mode.")

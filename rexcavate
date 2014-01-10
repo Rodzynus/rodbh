@@ -8,13 +8,14 @@ local v = {
 	length = nil;
 	width = nil;
 	height = nil;
+	xStart = 1;
+	zStart = 1;
 	roomType = nil;
 	horizontalBool = false;
 	verticalBool = true;
-	horizontalLenghtBool = true;
+	horizontalLengthBool = true;
 	recId = nil;
 	mode = "nofill";
-	tries = 0;
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
 		--== Message printed when out of fuel ==--
@@ -56,14 +57,14 @@ if not loadVariables() then
 	v.startMsg1 = "Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpocznie sie za: "
 	v.startMsg2 = "Kopanie odkrywkowe o wymiarach " .. v.length .. " x " ..  v.width + 1 .. " rozpoczete."
 end
-local xStart, yStart, zStart  = math.abs(v.x) + 1, math.abs(v.y) + 1, math.abs(v.z) + 1
 rodbh.initTable(v)
 
 local function excavate()
 	while true do
-		for i = xStart, v.width + 1, 1 do
-			if i ~= xStart then 
+		for i = v.xStart, v.width + 1 do
+			if i ~= v.xStart then 
 				rodbh.horizontalFaceFront(true)
+				v.xStart = i
 				if not rodbh.moveForward() then return true end
 			end
 			if v.horizontalLengthBool then
@@ -71,13 +72,14 @@ local function excavate()
 			else
 				rodbh.faceSouth()
 			end
-			for j = zStart, v.length - 1, 1 do
+			for j = v.zStart, v.length - 1 do
+				v.zStart = j
 				if not rodbh.moveForward() then return true end
 			end
-			zStart = 1
+			v.zStart = 1
 			v.horizontalLengthBool = not v.horizontalLengthBool
 		end
-		xStart = 1
+		v.xStart = 1
 		v.horizontalBool = not v.horizontalBool
 		if not rodbh.moveDown() then return true end
 	end	
