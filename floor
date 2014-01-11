@@ -16,6 +16,8 @@ local v = {
 	mode = "fill";
 			--== Message printed when inventory is full ==--
 	invMsg = "Skrzynka na rozladunek pelna, czekam na miejsce do rozladunku.";
+		--== Message printed when turtle's lacking building material for filling ==--
+	fillMsg = "Brak budulca, wstaw budulec w slot 1 lub do wyznaczonej do tego skrzynki.";
 		--== Message printed when out of fuel ==--
 	fuelMsg = "Ludozerka chce cukierka!";
 		--== Message printed when bedrock was reached. ==--
