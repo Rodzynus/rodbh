@@ -53,7 +53,7 @@ if not loadVariables() then
 			elseif val == "right" then v.horizontalBool = true
 			elseif val == "up" then v.verticalBool = true
 			elseif val == "down" then v.verticalBool = false
-			elseif val == "extension" then v.extensiton = true
+			elseif val == "extension" then v.extension = true
 			end
 	end
 	v.verticalInit = v.verticalBool
