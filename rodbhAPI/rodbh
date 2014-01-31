@@ -382,7 +382,7 @@ function getAll()
 		sendAndPrint(variables.continueMsg)
 	end
 	
-	if variables.roomType ~= "nofill" and variables.roomType ~= "excavate" then
+	if variables.mode == "fill" and then
 		faceWest()
 		moveForward(true)
 		faceSouth()
