@@ -85,6 +85,7 @@ function moveUp(noCheck)
 			tries = tries + 1
 		end
 	end
+	variables.y = variables.y + 1
 	return true
 end
 
@@ -108,6 +109,7 @@ function moveDown(noCheck)
 			tries = tries + 1
 		end
 	end
+	variables.y = variables.y - 1
 	return true
 end
 
