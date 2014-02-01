@@ -382,7 +382,7 @@ function getAll()
 		sendAndPrint(variables.continueMsg)
 	end
 	
-	if variables.mode == "fill" and then
+	if variables.mode == "fill" then
 		faceWest()
 		moveForward(true)
 		faceSouth()
