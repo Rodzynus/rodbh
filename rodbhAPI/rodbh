@@ -197,7 +197,7 @@ function goToStart()
 	if variables.y < 0 then
 		while math.abs(variables.y) > 0 do moveUp(true) end
 	else
-		while math.abs(variables.y) < 0 do moveDown(true) end
+		while math.abs(variables.y) > 0 do moveDown(true) end
 	end
 	
 	if variables.x == 0 then
